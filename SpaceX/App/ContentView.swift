@@ -9,18 +9,17 @@ import SwiftUI
 
 struct ContentView: View {
     //MARK: - PROPERTIES
+    @EnvironmentObject var spacex: SpaceXModel
     @State private var isShowingSettings: Bool = false
-    @State private var rockets: [Rocket] = []
-    @State private var launches: [Launch] = []
     
     //MARK: - BODY
     var body: some View {
         NavigationView {
-            if rockets.isEmpty {
+            if spacex.loadingRockets || spacex.loadingLaunches {
                 ProgressView("Loading data...")
             } else {
                 TabView {
-                    ForEach(rockets.shuffled()) { rocket in
+                    ForEach(spacex.rockets.shuffled()) { rocket in
                         ScrollView(.vertical, showsIndicators: false) {
                             VStack {
                                 //MARK: - HEADER
@@ -104,8 +103,7 @@ struct ContentView: View {
                                         
                                         //MARK: - LAUNCHES BUTTON
                                         NavigationLink {
-                                            let rocketLaunches = launches.filter{ $0.rocket == rocket.id }
-                                            LaunchesView(launches: rocketLaunches, rocket: rocket)
+                                            LaunchesView(rocket: rocket)
                                         } label: {
                                             LaunchButtonView()
                                                 .padding(32)
@@ -122,23 +120,20 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.vertical)
             }
         } //: NAVIGATION
-        .onAppear {
-            Api().getRockets { rockets in
-                self.rockets = rockets
-                Api().getLaunches { launches in
-                    for rocket in rockets {
-                        self.launches.append(contentsOf: launches.filter{ $0.rocket == rocket.id })
-                    }
-                }
-            }
-        }
+        .environmentObject(spacex)
     }
 }
 
 //MARK: - PREVIEW
 struct ContentView_Previews: PreviewProvider {
+    static let spacex: SpaceXModel = {
+        let spacex = SpaceXModel()
+        spacex.rockets = Rocket.rocketsExample
+        return spacex
+    }()
+    
     static var previews: some View {
         ContentView()
-            .preferredColorScheme(.light)
+            .environmentObject(spacex)
     }
 }

@@ -9,14 +9,14 @@ import SwiftUI
 
 struct LaunchesView: View {
     //MARK: - PROPERTIES
-    var launches: [Launch]
-    var rocket: Rocket
+    @EnvironmentObject var spacex: SpaceXModel
+    let rocket: Rocket
     
     //MARK: - BODY
     var body: some View {
         ScrollView {
             VStack(spacing: 10) {
-                ForEach(launches.filter{ $0.rocket == rocket.id }) { launch in
+                ForEach(spacex.launchesFor(rocket)) { launch in
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(launch.name)
@@ -48,7 +48,14 @@ struct LaunchesView: View {
 
 //MARK: - PREVIEW
 struct LaunchesView_Previews: PreviewProvider {
+    static let spacex: SpaceXModel = {
+        let spacex = SpaceXModel()
+        spacex.launches = Launch.launchesExample
+        return spacex
+    }()
+    
     static var previews: some View {
-        LaunchesView(launches: Launch.launchesExample, rocket: Rocket.rocketExample)
+        LaunchesView(rocket: Rocket.rocketExample)
+            .environmentObject(spacex)
     }
 }

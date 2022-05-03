@@ -41,8 +41,9 @@ struct Rocket: Codable, Identifiable {
         case secondStage = "second_stage"
     }
     
-    // MARK: - ROCKET EXAMPLE
+    // MARK: - ROCKET EXAMPLES
     static let rocketExample = Rocket(id: "5e9d0d95eda69955f709d1eb", flickrImages: ["https://imgur.com/DaCfMsj.jpg", "https://imgur.com/azYafd8.jpg"], name: "Falcon 1", height: HeightDiameter.heightExample, diameter: HeightDiameter.diameterExample, mass: Mass.massExample, payloadWeights: Payload.payloadsExample, firstFlight: "2006-03-24", country: "Republic of the Marshall Islands", costPerLaunch: 6700000, firstStage: Stage.stageExample, secondStage: Stage.stageExample)
+    static let rocketsExample = [Rocket](repeating: rocketExample, count: 4)
     
     // MARK: - HEIGHT/DIAMETER
     struct HeightDiameter: Codable {

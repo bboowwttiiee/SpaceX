@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct SpaceXApp: App {
+    @StateObject var spacex = SpaceXModel()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(spacex)
         }
     }
 }
